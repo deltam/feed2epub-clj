@@ -1,0 +1,26 @@
+# feed2epub-clj
+
+Convert rss2 feeds into .epub, on Clojure
+RSS2フィードをePubに変換するツールをClojureで書いてみた。
+
+ePub created by this tool, checked open it by these ePub readers.
+このツールで作成したepubは、これらのePubリーダーで開けることをチェックしています。
+  iBooks
+  Stanza http://www.lexcycle.com/
+
+
+## Usage
+
+$ lein deps
+$ lein uberjar 
+$ java -jar feed2epub-clj-standalone.jar "<rss_url>"
+
+RSS2フィードのURLを文字列として指定してください。
+
+output <blog title>.epub
+ブログタイトル.epubというファイルが出力されます。
+
+
+## License
+
+FIXME: write
