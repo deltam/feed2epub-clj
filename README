@@ -17,7 +17,7 @@ $ java -jar feed2epub-clj-standalone.jar "<rss_url>"
 
 RSS2フィードのURLを文字列として指定してください。
 
-output <blog title>.epub
+generate <blog title>.epub
 ブログタイトル.epubというファイルが出力されます。
 
 
