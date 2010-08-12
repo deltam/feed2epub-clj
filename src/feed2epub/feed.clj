@@ -24,14 +24,28 @@
   (first (xml-sub-seq url tag #(get-cont cont-tag %))))
 
 
+(defn- ret-tags [xseq]
+  (let [type ((first xseq) :tag)]
+    (condp = type
+      :rss  {:outer :channel, :blog-title :title, :author :dc:creator,
+             :entry :item,  :title :title, :text :description}
+      :feed {:outer :feed   , :blog-title :title, :author :author,
+             :entry :entry, :title :title, :text :content})))
+
+
 (defn get-feed-meta [url]
-  {:blog-title (find-cont url :channel :title)
-   :author     (find-cont url :channel :dc:creator)})
+  (let [xs (xml-seq (parse url))
+        tags (ret-tags xs)]
+    {:blog-title (find-cont url (tags :outer) (tags :blog-title))
+     :author     (find-cont url (tags :outer) (tags :author))}))
 
 
 (defn get-feeds [url]
-  (reverse
-   (xml-sub-seq url :item
-                #(let [title (get-cont :title %)
-                       text  (get-cont :description %)]
-                   (list title (str "<b>" title "</b>" text))))))
+  (let [xs (xml-seq (parse url))
+        tags (ret-tags xs)]
+    (reverse
+     (xml-sub-seq url
+                  (tags :entry)
+                  #(let [title (get-cont (tags :title) %)
+                         text  (get-cont (tags :text) %)]
+                     (list title (str "<b>" title "</b>" text)))))))
