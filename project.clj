@@ -1,4 +1,4 @@
-(defproject feed2epub-clj "0.0.1-alpha"
+(defproject feed2epub-clj "0.0.2-alpha"
   :description "Convert rss2 feeds into .epub, on Clojure"
   :url "http://github.com/deltam/feed2epub-clj"
   :main feed2epub.core
