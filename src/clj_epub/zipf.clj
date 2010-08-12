@@ -1,4 +1,4 @@
-; zip file output
+; zip file output for generating epub
 (ns clj-epub.zipf
   (:import [java.util.zip ZipEntry ZipOutputStream CRC32]
            [java.io InputStreamReader

@@ -17,7 +17,7 @@
             text  (second entry)]
         (with-open [w (writer (str title ".txt"))]
           (.write w text))))
-;    (println author)
+    (println author)
     (gen-epub (str blog ".epub")
               blog
               (map #(str (first %) ".txt") feeds))))
