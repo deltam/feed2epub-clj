@@ -1,7 +1,7 @@
 # feed2epub-clj
 
-Convert rss2 feeds into .epub, on Clojure
-RSS2フィードをePubに変換するツールをClojureで書いてみた。
+Convert RSS2.0/Atom feeds into .epub, on Clojure
+RSS2.0/AtomフィードをePubに変換するツールをClojureで書いてみた。
 
 ePub created by this tool, checked open it by these ePub readers.
 このツールで作成したepubは、これらのePubリーダーで開けることをチェックしています。
