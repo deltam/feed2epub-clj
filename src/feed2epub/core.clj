@@ -12,12 +12,7 @@
         blog   (:blog-title fmeta)
         author (:author fmeta)
         feeds (get-feeds url)]
-    (doseq [entry feeds]
-      (let [title (first entry)
-            text  (second entry)]
-        (with-open [w (writer (str title ".txt"))]
-          (.write w text))))
     (println author)
     (gen-epub (str blog ".epub")
               blog
-              (map #(str (first %) ".txt") feeds))))
+              feeds)))

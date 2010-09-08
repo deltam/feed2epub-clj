@@ -71,34 +71,37 @@
                  ]]))))
 
 
-(defn to-epub-text [filename text_name]
-  (with-open [r (reader filename)]
-    (let [text (reduce str (for [line (line-seq r)] line))
-          valid-text (.. text (replaceAll "<br>" "<br/>")
+(defn str-to-epub-text [text_str text_name]
+    (let [valid-text (.. text_str (replaceAll "<br>" "<br/>")
                          (replaceAll "<img([^>]*)>" "<img$1/>"))]
-    (ftext text_name
-           (str "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+      (ftext text_name
+             (str "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
                 "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n"
                 (html [:html {:xmlns "http://www.w3.org/1999/xhtml"}
                        [:head
-                        [:title filename]
+                        [:title text_name]
                         [:meta {:http-equiv "Content-Type" :content "application/xhtml+xml; charset=utf-8"}]]
                        [:body
                         valid-text
-;                          [:p line])
-                        ]]))))))
+                        ]])))))
 
 
-(defn gen-epub [epub-name epub-title text-files]
+(defn to-epub-text [filename text_name]
+  (with-open [r (reader filename)]
+    (let [text (reduce str (for [line (line-seq r)] line))]
+      (str-to-epub-text text text_name))))
+
+
+(defn gen-epub [epub-name epub-title text-list]
   (let [id       (str (. java.util.UUID randomUUID))
-        sections (map #(.replaceAll % "\\.[^.]+$" "") text-files)
+        sections (map #(first %) text-list)
         htmls    (map #(str % ".html") sections)
         epubinf  {:mimetype (mimetype)
                   :metainf  (make-meta-inf)
                   :opf      (out-content-opf epub-title id htmls sections)
                   :ncx      (out-ncx id sections)
-                  :texts    (for [s sections]
-                              (to-epub-text (str s ".txt") (str s ".html")))}]
+                  :texts    (for [ts text-list]
+                              (str-to-epub-text (second ts) (str (first ts) ".html")))}]
     (with-open [zos (open-zip epub-name)]
       (store-str zos (epubinf :mimetype))
       (doseq [key [:metainf :opf :ncx]]
