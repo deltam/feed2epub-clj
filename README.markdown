@@ -25,10 +25,14 @@ generate <blog title>.epub
 
 * debug to convert Atom feeds.
   （Atomフィード変換のバグを直す）
+* added datetime on ePub metadata
+* added generating datetime to ePub filename(MAYBE)
 * including image file to ePub
 　（画像ファイルをダウンロードしてePubに含める）
 * use Tidy to clean up dirty HTML
    (http://jtidy.sourceforge.net/)
 
+2
+## License
 Copyright (c) 2010 deltam (deltam@gmail.com).
 Licensed under the MIT License (http://www.opensource.org/licenses/mit-license.php)
