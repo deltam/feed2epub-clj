@@ -11,9 +11,9 @@ ePub created by this tool, checked open it by these ePub readers.
 
 ## Usage
 
-$ lein deps
-$ lein uberjar 
-$ java -jar feed2epub-clj-standalone.jar "<rss_url>"
+    $ lein deps
+    $ lein uberjar 
+    $ java -jar feed2epub-clj-standalone.jar "<rss_url>"
 
 RSS2フィードのURLを文字列として指定してください。
 
@@ -21,7 +21,14 @@ generate <blog title>.epub
 ブログタイトル.epubというファイルが出力されます。
 
 
-## License
+## TODO
+
+* debug to convert Atom feeds.
+  （Atomフィード変換のバグを直す）
+* including image file to ePub
+　（画像ファイルをダウンロードしてePubに含める）
+* use Tidy to clean up dirty HTML
+   (http://jtidy.sourceforge.net/)
 
 Copyright (c) 2010 deltam (deltam@gmail.com).
 Licensed under the MIT License (http://www.opensource.org/licenses/mit-license.php)
