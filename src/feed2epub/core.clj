@@ -13,6 +13,7 @@
         author (:author fmeta)
         feeds (get-feeds url)]
     (println author)
+    (println "entries: " (count feeds))
     (gen-epub (str blog ".epub")
               blog
               feeds)))

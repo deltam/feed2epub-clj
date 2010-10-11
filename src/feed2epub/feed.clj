@@ -1,7 +1,8 @@
 ; feed (RSS2, ATOM)
 (ns feed2epub.feed
   (:use [clojure.contrib.duck-streams :only (reader writer)])
-  (:use [clojure.xml :only (parse)]))
+  (:use [clojure.xml :only (parse)])
+  (:use [hiccup.core :only (html)]))
 
 ;(defstruct feed-tags :outer :blog-title :author :entry :title :content)
 ;(def rss2-tags (struct feed-tags :channel :title :dc:creator :item  :title :description))
@@ -35,9 +36,13 @@
   [xseq]
   (let [type ((first xseq) :tag)]
     (condp = type
-      :rss  {:outer :channel, :blog-title :title, :author :dc:creator,
+      ; RSS2.0
+      :rss  {:type "RSS2.0"
+             :outer :channel, :blog-title :title, :author :dc:creator,
              :entry :item,  :title :title, :text :description}
-      :feed {:outer :feed   , :blog-title :title, :author :author,
+      ; Atom
+      :feed {:type "Atom"
+             :outer :feed   , :blog-title :title, :author :author,
              :entry :entry, :title :title, :text :content})))
 
 
@@ -47,7 +52,23 @@
   (let [xs (xml-seq (parse url))
         tags (ret-tags xs)]
     {:blog-title (find-cont url (tags :outer) (tags :blog-title))
-     :author     (find-cont url (tags :outer) (tags :author))}))
+     :author
+     (condp = (tags :type)
+       "RSS2.0" (find-cont url (tags :outer) (tags :author))
+       "Atom"   (find-cont url (tags :author) :name) ; no handling author by entry
+       )}))
+
+
+(defn- atom-cont->html
+  "Atomフィードのcontentタグ内容をHTMLに変換する"
+  [gcont]
+;  (println (count gcont) "======================")
+;  (println gcont)
+;  (println
+  (hiccup.core/html
+   (for [y (:content gcont)]
+     (vector (:tag y) (first (:content y)))
+     )))
 
 
 (defn get-feeds
@@ -59,5 +80,9 @@
      (xml-sub-seq url
                   (tags :entry)
                   #(let [title (get-cont (tags :title) %)
-                         text  (get-cont (tags :text) %)]
-                     (list title (str "<b>" title "</b>" text)))))))
+                         text  (condp = (tags :type)
+                                 "RSS2.0"  (get-cont (tags :text) %)
+                                 "Atom" (atom-cont->html
+                                         (get-cont (tags :text) %))
+                                 )]
+                     (list title (str "<b>" title "</b><br/>" text)))))))
