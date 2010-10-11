@@ -29,13 +29,16 @@ generate <blog title>.epub
 
 ## TODO
 
+* refactoring.
+* writing unit test.
 * debug to convert Atom feeds.
   （Atomフィード変換のバグを直す）
-* added datetime on ePub metadata
+* added datetime on ePub metadata.
+* added feed meta data to ePub.(author, book id = blog url, ...)
 * added generating datetime to ePub filename(MAYBE)
-* including image file to ePub
+* including image file to ePub.
 　（画像ファイルをダウンロードしてePubに含める）
-* use Tidy to clean up dirty HTML
+* use Tidy to clean up dirty HTML.
    (http://jtidy.sourceforge.net/)
 
 

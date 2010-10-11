@@ -56,15 +56,15 @@
      (condp = (tags :type)
        "RSS2.0" (find-cont url (tags :outer) (tags :author))
        "Atom"   (find-cont url (tags :author) :name) ; no handling author by entry
-       )}))
+       )
+     ; if atom feed, getting content type (html, xhtml, ...)
+     :content-type (:type (first (xml-sub-seq url :content #(:attrs %))))
+     }))
 
 
 (defn- atom-cont->html
   "Atomフィードのcontentタグ内容をHTMLに変換する"
   [gcont]
-;  (println (count gcont) "======================")
-;  (println gcont)
-;  (println
   (hiccup.core/html
    (for [y (:content gcont)]
      (vector (:tag y) (first (:content y)))
@@ -75,14 +75,16 @@
   "urlで指定されたフィードXMLからタイトルと内容のリストを作り返す。記事の順序は旧->新の順にする"
   [url]
   (let [xs (xml-seq (parse url))
-        tags (ret-tags xs)]
+        tags (ret-tags xs)
+        fmeta (get-feed-meta url)]
     (reverse
      (xml-sub-seq url
                   (tags :entry)
                   #(let [title (get-cont (tags :title) %)
                          text  (condp = (tags :type)
                                  "RSS2.0"  (get-cont (tags :text) %)
-                                 "Atom" (atom-cont->html
-                                         (get-cont (tags :text) %))
+                                 "Atom" (if (= "xhtml" (:content-type fmeta))
+                                          (atom-cont->html (get-cont (tags :text) %))
+                                          (get-cont (tags :text) %))
                                  )]
                      (list title (str "<b>" title "</b><br/>" text)))))))
